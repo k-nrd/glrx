@@ -1,21 +1,15 @@
-import gleam/list
+import teardown.{Teardown}
+import observer.{Observer}
+import subscription.{Subscription}
+import subscriber
 
-pub type Teardown =
-  fn() -> Nil
-
-pub type Observer(t, u) {
-  Observer(next: fn(t) -> Nil, error: fn(u) -> Nil, complete: fn() -> Nil)
+pub opaque type Observable(t) {
+  Observable(init: fn(Observer(t)) -> Teardown)
 }
 
-pub type Subscription {
-  Subscription(teardowns: List(Teardown))
-}
-
-pub fn add_teardown(sub: Subscription, td: Teardown) -> Subscription {
-  Subscription(teardowns: [td, ..sub.teardowns])
-}
-
-pub fn unsubscribe(sub: Subscription) -> Subscription {
-  list.each(sub.teardowns, fn(f) { f() })
-  Subscription(teardowns: [])
+pub fn subscribe(observable: Observable(t), observer: Observer(t, u)) -> Subscription {
+  let sub = subscription.new()
+  let subber = subscriber.new(observer, sub)
+  subscription.add(sub, observable.init(subber))
+  sub
 }
