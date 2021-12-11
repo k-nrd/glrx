@@ -6,14 +6,14 @@ pub opaque type Subscription {
 }
 
 pub fn new() -> Subscription {
-  Subscription(teardowns: [])
+  Subscription([])
 }
 
-pub fn add(sub: Subscription, td: Teardown) -> Subscription {
-  Subscription(teardowns: [td, ..sub.teardowns])
+pub fn add_teardown(sub: Subscription, td: Teardown) -> Subscription {
+  Subscription([td, ..sub.teardowns])
 }
 
 pub fn unsubscribe(sub: Subscription) -> Subscription {
   list.each(sub.teardowns, fn(f) { f() })
-  Subscription(teardowns: [])
+  Subscription([])
 }

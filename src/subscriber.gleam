@@ -12,20 +12,32 @@ pub opaque type Subscriber(t, u) {
 }
 
 pub fn new(
-  destination: Observer(t, u),
   subscription: Subscription,
+  destination: Observer(t, u),
 ) -> Subscriber(t, u) {
-  Subscriber(
-    destination: destination,
-    subscription: subscription,
-    closed: False,
-  )
+  Subscriber(destination, subscription, False)
 }
 
-pub fn next(subscriber: Subscriber(t, u), value: t) -> Nil {
-  io.debug(subscriber)
-  case subscriber.closed {
-    True -> Nil
-    False -> subscriber.destination.next(value)
+pub fn next(subber: Subscriber(t, u), value: t) -> Subscriber(t, u) {
+  let dest = case subber.closed {
+    True -> subber.destination
+    False -> observer.next(subber.destination, value)
   }
+  Subscriber(..subber, destination: dest)
+}
+
+pub fn error(subber: Subscriber(t, u), err: u) -> Subscriber(t, u) {
+  let dest = case subber.closed {
+    True -> subber.destination
+    False -> observer.error(subber.destination, err)
+  }
+  Subscriber(dest, subscription.unsubscribe(subber.subscription), True)
+}
+
+pub fn complete(subber: Subscriber(t, u)) -> Subscriber(t, u) {
+  let dest = case subber.closed {
+    True -> subber.destination
+    False -> observer.complete(subber.destination)
+  }
+  Subscriber(dest, subscription.unsubscribe(subber.subscription), True)
 }
