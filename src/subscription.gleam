@@ -5,7 +5,11 @@ pub opaque type Subscription {
   Subscription(teardowns: List(Teardown))
 }
 
-pub fn new() -> Subscription {
+pub fn new(initial_teardown: Teardown) -> Subscription {
+  Subscription([initial_teardown])
+}
+
+pub fn empty() -> Subscription {
   Subscription([])
 }
 

@@ -25,7 +25,7 @@ pub fn from_list(lst: List(t)) -> Observable(t, u) {
 }
 
 pub fn subscribe(source: Observable(t, u), obs: Observer(t, u)) -> Subscription {
-  let subs = subscription.new()
+  let subs = subscription.empty()
   subscription.add_teardown(subs, init(source, subscriber.new(subs, obs)))
 }
 
