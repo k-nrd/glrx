@@ -48,8 +48,8 @@ pub fn execute_children_teardown_test() {
     |> subscription.add_teardown(lazy_send(sender, "hey"))
 
   subscription.empty()
-    |> subscription.add_child(child)
-    |> subscription.unsubscribe
+  |> subscription.add_child(child)
+  |> subscription.unsubscribe
 
   process.receive(receiver, 0)
   |> should.equal(Ok("hey"))
@@ -64,8 +64,8 @@ pub fn execute_added_child_teardowns_immediately_if_closed_test() {
     |> subscription.add_teardown(lazy_send(sender, "hey"))
 
   subscription.empty()
-    |> subscription.unsubscribe
-    |> subscription.add_child(child)
+  |> subscription.unsubscribe
+  |> subscription.add_child(child)
 
   process.receive(receiver, 0)
   |> should.equal(Ok("hey"))
@@ -81,7 +81,8 @@ pub fn do_not_add_duplicated_children_test() {
     subscription.empty()
     |> subscription.add_teardown(fn() { Nil })
 
-  let main = subscription.empty()
+  let main =
+    subscription.empty()
     |> subscription.add_child(child1)
     |> subscription.add_child(child1)
     |> subscription.add_child(child2)
