@@ -5,7 +5,6 @@ import observer.{Observer}
 import observable.{Observable}
 import subscriber.{Subscriber}
 import subscription
-import ops
 
 pub fn main() {
   let my_safe_observable =
